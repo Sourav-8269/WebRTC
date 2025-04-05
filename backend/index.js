@@ -39,6 +39,21 @@ io.on("connection", (socket) => {
     io.to(to).emit("incomming_call", { from: socket.id, offer });
   });
 
+  socket.on("call_accepted", ({ to, answer }) => {
+    console.log("Call accepted", to, answer);
+    io.to(to).emit("call_accepted", { answer, from: socket.id });
+  });
+
+  socket.on("peer_negotiation", ({ to, offer }) => {
+    console.log("Peer negotiation", to, offer);
+    io.to(to).emit("peer_negotiation", { from: socket.id, offer });
+  });
+
+  socket.on("peer_negotiation_done", ({ to, answer }) => {
+    console.log("Peer negotiation done", to, answer);
+    io.to(to).emit("peer_negotiation_final", { from: socket.id, answer });
+  });
+
   socket.on("send_message", (data) => {
     console.log(data);
     socket.to(data.room).emit("receive_message", data.message);
